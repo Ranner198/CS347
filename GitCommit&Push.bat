@@ -19,4 +19,5 @@ git add .
 git commit -m "GitCommand&Push Remote User..." 
 git pull
 git push
+git pull
 pause
