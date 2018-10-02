@@ -1,0 +1,6 @@
+-Assets Provided from OpenGameArt.com-
+
+Sound: https://opengameart.org/content/happy-arcade-tune
+Player Sprite: https://opengameart.org/content/classic-hero
+Background: https://opengameart.org/content/minimalist-sidescroll-city
+Brick Wall: https://opengameart.org/content/seamless-wall
