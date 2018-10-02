@@ -7,6 +7,7 @@ TagManager:
   - Spikes
   - Ground
   - Ball
+  - Score
   layers:
   - Default
   - TransparentFX
@@ -18,7 +19,7 @@ TagManager:
   - 
   - BallCollitionPlayerEnabled
   - BallCollitionPlayerDisabled
-  - GameManager
+  - 
   - 
   - 
   - 

@@ -43,89 +43,98 @@ public class PlayerMovement : MonoBehaviour {
     private SpriteRenderer sprite_Order_Layer;
 
 	void Start () {
+        FaceRight();
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         cc = GetComponent<CircleCollider2D>();
         bc = GetComponent<BoxCollider2D>();
         jumpNum = jumpLimit;
         sprite_Order_Layer = GetComponent<SpriteRenderer>();
+        //lm = ~lm;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-
-        if (alive)
+        if (!GameManager.WonState)
         {
-
-            Debug.DrawRay(transform.position, Vector2.down * rayCastLength, Color.red);
-
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, lm);
-            float distance = Mathf.Abs(hit.point.y - transform.position.y);
-            print(hit.collider.name);
-            if (hit.collider.tag == "Ground" && distance < rayCastLength)
-            {               
-                grounded = true;
-                jumpNum = jumpLimit;
-            }
-            else
+            if (alive)
             {
-                grounded = false;
-                anim.Play("JumpAnim");
-            }
 
-            Vector2 input = new Vector2(Input.GetAxis("Horizontal"), 0);
+                Debug.DrawRay(transform.position, Vector2.down * rayCastLength, Color.red);
 
-            rb.AddForce(new Vector2(input.x * speed * Time.deltaTime * 60, 0));
+                RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, lm);
+                float distance = Mathf.Abs(hit.point.y - transform.position.y);
 
-            if (input.magnitude < .1f && input.magnitude > -.1f && grounded)
-                anim.Play("IdleAnim");
-
-            if (input.x > 0 && grounded || input.x < 0 && grounded)
-            {
-                anim.Play("RunAnim");
-            }
-
-            if (input.x > 0 && !facingRight)
-            {
-                flip();
-            }
-            else if (input.x < 0 && facingRight)
-            {
-                flip();
-            }
-
-            if (!doubleJump)
-            {
-                //For Single Jump
-                if (grounded && jumpNum > 0)
+                if (hit.collider.tag == "Ground" && distance < rayCastLength)
                 {
-                    if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
+                    grounded = true;
+                    jumpNum = jumpLimit;
+                }
+                else
+                {
+                    grounded = false;
+                    anim.Play("JumpAnim");
+                }
+
+                Vector2 input = new Vector2(Input.GetAxis("Horizontal"), 0);
+
+                rb.AddForce(new Vector2(input.x * speed * Time.deltaTime * 60, 0));
+
+                if (input.magnitude < .1f && input.magnitude > -.1f && grounded)
+                    anim.Play("IdleAnim");
+
+                if (input.x > 0 && grounded || input.x < 0 && grounded)
+                {
+                    anim.Play("RunAnim");
+                }
+
+                if (input.x > 0 && !facingRight)
+                {
+                    flip();
+                }
+                else if (input.x < 0 && facingRight)
+                {
+                    flip();
+                }
+
+                if (!doubleJump)
+                {
+                    //For Single Jump
+                    if (grounded && jumpNum > 0)
                     {
-                        jumpNum--;
-                        rb.AddForce(new Vector2(0, jumpForce * 60));
+                        if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
+                        {
+                            jumpNum--;
+                            rb.AddForce(new Vector2(0, jumpForce * 60));
+                        }
                     }
                 }
-            }
-            if (doubleJump)
-            {
-                //For Double Jump        
-                if (jumpNum > 0)
+                if (doubleJump)
                 {
-                    if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
+                    //For Double Jump        
+                    if (jumpNum > 0)
                     {
-                        jumpNum--;
-                        rb.AddForce(new Vector2(0, jumpForce * 60));                       
+                        if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
+                        {
+                            jumpNum--;
+                            rb.AddForce(new Vector2(0, jumpForce * 60));
+                        }
                     }
                 }
             }
         }
+        else
+        {
+            anim.Play("WonAnim");
+            //maybe add a fade circle effect?
+        }
 
-        if (!alive && deathTimer < 0)
+        if (!alive && deathTimer < 0 || deathTimer < 0 && GameManager.WonState)
         {
             SceneManager.LoadScene("SampleScene");
             alive = true;
         }
-        if (!alive && deathTimer >= 0)
+        if (!alive && deathTimer >= 0 || deathTimer >= 0 && GameManager.WonState)
             deathTimer -= Time.deltaTime;
     }
 
@@ -148,5 +157,13 @@ public class PlayerMovement : MonoBehaviour {
             rb.AddForce(new Vector2(0, 300));
             deathTimer = 2;
         }
+    }
+
+    void FaceRight() {
+        Vector3 size = gameObject.transform.localScale;
+        if (size.x < 0)
+            size.x *= 1;
+        facingRight = true;
+        gameObject.transform.localScale = size;
     }
 }

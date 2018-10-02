@@ -4,28 +4,28 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour {
 
-    public GameObject ball;
-    public GameObject ballPrefab;
-    public GameObject ballSpawnLocation;
+    public Sprite sprite1, sprite2;
+    private SpriteRenderer spriteRender;
+
+    public static bool WonState = false;
 
 	void Start () {
+        spriteRender = GetComponent<SpriteRenderer>();
+        WonState = false;
+        spriteRender.sprite = sprite1;
+    }
 
-	}
-	
-	
-	void Update () {
 
-        if (ball == null) {
-            print("called");
-            ball = Instantiate(ballPrefab, ballSpawnLocation.transform.position, Quaternion.identity);
-        }
-	}
+    void Update() {
+        if (WonState)
+            spriteRender.sprite = sprite2;
+    }
 
-    void OnTriggerExit2D(Collider2D coll)
+    void OnCollisionEnter2D(Collision2D coll)
     {
         if (coll.gameObject.tag == "Ball")
         {
-            ball = null;
+            WonState = true;
         }
     }
 }

@@ -21,11 +21,16 @@ public class BallCollition : MonoBehaviour {
 
 	void Update () {
 
+        if (GameManager.WonState)
+            Destroy(gameObject);
+
         Vector2 throwBall = new Vector2(throwForceX, throwForceY);
 
         if (isHeld)
         {
-            gameObject.layer = 9;
+            rb.gravityScale = 0;
+            bc.isTrigger = true;
+            gameObject.layer = 2;
             Vector3 loc = player.transform.position;
             loc.y -= 0.2f;
             transform.position = Vector3.Slerp(transform.position, loc, Time.deltaTime * 25);
@@ -40,9 +45,12 @@ public class BallCollition : MonoBehaviour {
                 rb.AddForce(throwBall * 60);
                 isHeld = false;
                 timer = 2;
+                gameObject.layer = 9;
+                bc.isTrigger = false;
+                rb.gravityScale = 1;
             }
             transform.rotation = Quaternion.Euler(0,0,0);
-        }
+        }          
 
         if (timer >= 0)
             timer -= Time.deltaTime;
@@ -61,6 +69,15 @@ public class BallCollition : MonoBehaviour {
         if (coll.gameObject.tag == "Player")
         {
             isHeld = true;
+        }
+    }
+
+    void OnTriggerExit2D(Collider2D coll)
+    {
+        print("Exit");
+        if (coll.gameObject.tag == "Player")
+        {
+
         }
     }
 }
