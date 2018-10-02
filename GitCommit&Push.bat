@@ -1,7 +1,10 @@
 @echo off
 
+color 0a
+title GitCommit/Push V0.01 - Ran Crump
+
 set INPUT=
-set /P INPUT=Type input: %=%
+set /P INPUT=Would you like to push a update? (y/n): %=%
 
 If /I "%INPUT%"=="y" goto yes 
 If /I "%INPUT%"=="n" goto no
